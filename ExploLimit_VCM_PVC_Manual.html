@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0a0804" />
+<title>ExploLimit VCM/PVC 사용 설명서</title>
+<style>
+:root{--bg:#0f0c08;--bg2:#0a0804;--card:#1a1410;--card2:#221a12;--line:rgba(255,180,80,.14);--txt:#f0e8dc;--txt2:#b8a48a;--txt3:#7a6a54;--accent:#f97316;--warn:#fbbf24;--danger:#ef4444;--info:#38bdf8;--ok:#22c55e}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans KR","Segoe UI",sans-serif;line-height:1.65}.wrap{max-width:980px;margin:0 auto;padding:0 18px 50px}.top{position:sticky;top:0;z-index:20;background:rgba(10,8,4,.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,180,80,.08)}.topin{max-width:980px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{display:flex;align-items:center;gap:8px}.brand b{font-size:17px}.actions{display:flex;gap:7px;flex-wrap:wrap}.btn{display:inline-block;text-decoration:none;color:var(--txt2);background:var(--card2);border:1px solid var(--line);padding:7px 10px;border-radius:8px;font-size:12px}.btn.primary{background:var(--accent);color:#fff;border-color:transparent}.hero{padding:48px 0 25px}.hero .eyebrow{color:var(--accent);font-size:12px;font-weight:700}.hero h1{font-size:34px;line-height:1.22;margin:8px 0}.hero p{max-width:760px;color:var(--txt2);margin:0}.notice{margin:20px 0;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.28);border-radius:12px;padding:14px;color:#fde68a;font-size:13px}.toc{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 30px}.toc a{text-decoration:none;color:var(--txt2);background:var(--card);border:1px solid rgba(255,180,80,.08);border-radius:10px;padding:12px;font-size:13px}.toc a:hover{border-color:rgba(249,115,22,.5);color:var(--txt)}section{margin:38px 0}.sectitle{font-size:22px;margin:0 0 12px}.sub{font-size:16px;margin:25px 0 8px;color:#fdba74}.lead{color:var(--txt2)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.card{background:var(--card);border:1px solid rgba(255,180,80,.08);border-radius:11px;padding:14px}.card b{display:block;margin-bottom:5px}.card p{margin:0;color:var(--txt2);font-size:12px}.step{display:grid;grid-template-columns:54px 1fr;gap:12px;align-items:start;margin:10px 0;background:var(--card);border-radius:11px;padding:13px}.num{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(249,115,22,.14);color:#fdba74;font-weight:800}.step h3{margin:0 0 4px;font-size:14px}.step p{margin:0;color:var(--txt2);font-size:12px}table{width:100%;border-collapse:collapse;font-size:12px;background:var(--card);border-radius:10px;overflow:hidden}th,td{padding:9px 8px;border-bottom:1px solid rgba(255,180,80,.08);text-align:left;vertical-align:top}th{color:#fdba74;background:rgba(255,180,80,.04)}td{color:var(--txt2)}tr:last-child td{border-bottom:0}.formula{background:#080604;border:1px solid var(--line);border-radius:10px;padding:15px;text-align:center;font-family:Consolas,monospace;font-size:17px;margin:10px 0}.callout{border-radius:10px;padding:13px;margin:12px 0;font-size:12px}.info{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);color:#bae6fd}.warn{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.28);color:#fde68a}.danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:#fecaca}.ok{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.25);color:#bbf7d0}.source-list li{margin:8px 0}.source-list a{color:#7dd3fc;word-break:break-all}.footer{text-align:center;color:var(--txt3);font-size:10px;margin-top:50px}@media(max-width:720px){.toc,.cards{grid-template-columns:1fr}.hero h1{font-size:27px}.topin{align-items:flex-start}.actions{justify-content:flex-end}.wrap{padding:0 14px 35px}table{font-size:11px;display:block;overflow-x:auto;white-space:nowrap}}@media print{.top,.toc,.actions{display:none}.wrap{max-width:none}.hero{padding-top:0}body{background:#fff;color:#111}.card,table,.step{background:#fff;border:1px solid #ddd}td,.lead,.hero p,.card p,.step p{color:#333}.sectitle,.sub,th{color:#111}.notice,.callout{border:1px solid #bbb;background:#f7f7f7;color:#222}.formula{background:#f7f7f7;color:#111}}
+</style>
+</head>
+<body>
+<div class="top"><div class="topin"><div class="brand"><span>🔥</span><b>ExploLimit VCM/PVC 설명서</b></div><div class="actions"><a class="btn primary" href="index.html">앱 실행</a><a class="btn" href="ExploLimit_VCM_PVC_Detailed_Manual.md">상세 MD</a></div></div></div>
+<div class="wrap">
+<header class="hero">
+  <div class="eyebrow">VCM · EDC · PVC OFF-GAS ENGINEERING SCREENING</div>
+  <h1>혼합가스 폭발한계<br>현장 1차 검토 가이드</h1>
+  <p>ExploLimit VCM/PVC v1.0은 VCM·PVC 생산공정의 GC 또는 물질수지 조성을 입력하여 정상 공기 기준 혼합 LEL/UEL을 신속히 추정하는 단일 HTML 웹앱입니다.</p>
+</header>
+<div class="notice"><b>중요:</b> 이 앱은 폭발방지 설계나 작업허가를 승인하는 도구가 아닙니다. 퍼지 완료, LOC/MOC, Hot Work, 밀폐공간 진입, 휴대용 검지기 보정 판단에는 사용하지 않습니다.</div>
+<nav class="toc">
+ <a href="#purpose">1. 목적과 사용범위</a><a href="#workflow">2. 사용 절차</a><a href="#principle">3. 계산 원리</a>
+ <a href="#result">4. 결과 해석</a><a href="#database">5. 화학물질 DB</a><a href="#limits">6. 한계와 금지사항</a>
+</nav>
+
+<section id="purpose">
+<h2 class="sectitle">1. 목적과 사용범위</h2>
+<p class="lead">공정 Off-gas 조성이 바뀌었을 때, 혼합물의 가연성이 어느 방향으로 변하는지를 빠르게 비교하는 것이 주목적입니다.</p>
+<div class="cards">
+ <div class="card"><b>GC 조성 검토</b><p>Vent, Recovery, Light-end, Dryer Off-gas의 분석조성으로 혼합 LEL/UEL을 계산합니다.</p></div>
+ <div class="card"><b>운전조건 비교</b><p>정상·기동·정지·이상반응 조성별로 LEL 변화와 가연성분 비율을 비교합니다.</p></div>
+ <div class="card"><b>HAZOP·MOC 선별</b><p>어떤 조성이 상세 검토 대상인지 우선순위를 정하는 참고자료로 사용합니다.</p></div>
+</div>
+<h3 class="sub">사용 가능한 질문</h3>
+<table><thead><tr><th>질문</th><th>사용 여부</th><th>비고</th></tr></thead><tbody>
+<tr><td>가연성분 혼합물의 정상 공기 기준 LEL/UEL은?</td><td>가능</td><td>Le Chatelier 1차 추정</td></tr>
+<tr><td>전체 Off-gas가 공기 중 몇 vol%일 때 LEL에 도달하는가?</td><td>조건부 가능</td><td>가연성분 비율에 따른 단순 희석 환산</td></tr>
+<tr><td>조성 A와 B 중 어느 쪽이 LEL이 낮은가?</td><td>가능</td><td>상대 비교에 적합</td></tr>
+<tr><td>탱크 산소농도가 퍼지 완료조건인가?</td><td>불가</td><td>LOC/MOC와 퍼지 안전여유 필요</td></tr>
+<tr><td>검지기 35%LEL를 실제 vol%로 바꿀 수 있는가?</td><td>불가</td><td>교정가스·센서 응답계수 필요</td></tr>
+</tbody></table>
+</section>
+
+<section id="workflow">
+<h2 class="sectitle">2. 사용 절차</h2>
+<div class="step"><div class="num">1</div><div><h3>공정 시나리오 선택 또는 초기화</h3><p>예시 조성은 교육용입니다. 실제 검토 시에는 반드시 GC·물질수지 값으로 교체합니다.</p></div></div>
+<div class="step"><div class="num">2</div><div><h3>DB 물질 추가</h3><p>VCM/EDC 핵심, Oxychlorination, EDC 열분해, PVC Copolymer, Heavy-end 필터로 물질을 찾습니다.</p></div></div>
+<div class="step"><div class="num">3</div><div><h3>전체 Stream 조성 입력</h3><p>가연성, 비가연성, 산화제를 모두 포함하여 100 vol%로 입력합니다. 합계가 다르면 정규화 버튼을 사용합니다.</p></div></div>
+<div class="step"><div class="num">4</div><div><h3>현재 주변농도 입력(선택)</h3><p>주변 공기 중 전체 Off-gas 농도를 입력합니다. 검지기의 %LEL 숫자는 입력하지 않습니다.</p></div></div>
+<div class="step"><div class="num">5</div><div><h3>결과와 데이터 품질 확인</h3><p>APPROVED, REVIEW, USER, HOLD 상태와 특수위험 경고를 먼저 확인한 뒤 수치를 해석합니다.</p></div></div>
+<div class="callout info">앱에 없는 물질은 <b>사용자 정의 물질</b>로 등록할 수 있습니다. 분자식만으로 LEL/UEL을 계산하지 않으며, 확인된 문헌값과 출처가 필요합니다.</div>
+</section>
+
+<section id="principle">
+<h2 class="sectitle">3. 계산 원리</h2>
+<h3 class="sub">3.1 가연성분 기준 혼합 LEL/UEL</h3>
+<p>전체 Off-gas 중 가연성 물질만 추출하고, 가연성분끼리 100%가 되도록 정규화한 몰분율 <b>zᵢ</b>를 사용합니다.</p>
+<div class="formula">1 / LEL<sub>mix</sub> = Σ ( zᵢ / LELᵢ )</div>
+<div class="formula">1 / UEL<sub>mix</sub> = Σ ( zᵢ / UELᵢ )</div>
+<p class="lead">예: 가연성분이 VCM 80%, EDC 20%라면 각 성분의 정규화 분율과 문헌 LEL/UEL을 역수 가중합니다.</p>
+<h3 class="sub">3.2 전체 Off-gas 기준 LEL</h3>
+<p>전체 Off-gas 중 가연성분 비율을 F라고 하면 다음과 같이 단순 희석 환산합니다.</p>
+<div class="formula">LEL<sub>stream</sub> = LEL<sub>fuel</sub> / F</div>
+<div class="callout warn">이 환산은 정상 공기 중 낮은 농도 영역에서의 1차 근사입니다. CO₂, 수증기, 염소계 물질, 산소가 포함되면 실제 화염전파 특성과 차이가 커질 수 있습니다.</div>
+<h3 class="sub">3.3 전체 Off-gas 기준 UEL을 HOLD하는 이유</h3>
+<p>불활성가스가 포함된 Stream이 공기와 섞일 때는 연료 농도뿐 아니라 산소와 희석가스 농도도 동시에 변합니다. 따라서 UEL을 단순히 가연성분 비율로 나누면 실제 상부 가연경계를 잘못 표시할 수 있습니다.</p>
+<div class="callout danger">비가연·산화제 성분이 포함된 경우 앱은 전체 Stream UEL을 계산하지 않고 <b>HOLD</b>합니다. 필요한 경우 Fuel–O₂–Inert 삼각 가연도 또는 실험자료를 사용해야 합니다.</div>
+</section>
+
+<section id="result">
+<h2 class="sectitle">4. 결과 해석</h2>
+<table><thead><tr><th>결과 항목</th><th>의미</th><th>사용법</th></tr></thead><tbody>
+<tr><td>가연성분 기준 LEL</td><td>가연물 혼합물 자체가 정상 공기에서 화염전파를 시작하는 하한 추정</td><td>조성 간 고유 가연성 비교</td></tr>
+<tr><td>가연성분 기준 UEL</td><td>가연물 혼합물의 상한 추정</td><td>가연범위 폭 비교, 상세검토 선별</td></tr>
+<tr><td>전체 Off-gas 기준 LEL</td><td>비가연성분을 포함한 전체 Stream이 공기 중 도달해야 하는 단순 환산농도</td><td>주변농도·누출계산과 비교</td></tr>
+<tr><td>전체 Off-gas 기준 UEL</td><td>비가연성분이 없는 경우에만 표시</td><td>비가연성분 포함 시 HOLD</td></tr>
+<tr><td>%LEL(계산)</td><td>현재 주변농도 ÷ 전체 Stream LEL × 100</td><td>검지기 표시값이 아닌 계산비율</td></tr>
+<tr><td>데이터 품질</td><td>문헌 검토 수준</td><td>REVIEW/HOLD 여부를 수치보다 먼저 확인</td></tr>
+</tbody></table>
+<h3 class="sub">농도 구간 표시</h3>
+<table><thead><tr><th>계산상 %LEL</th><th>앱 표시</th><th>의미</th></tr></thead><tbody>
+<tr><td>&lt;10%</td><td>LEL 미만 추정</td><td>폭발하한보다 낮다는 뜻일 뿐 독성·질식 측면의 안전을 뜻하지 않음</td></tr>
+<tr><td>10~25%</td><td>주의 구간</td><td>누출원과 환기 확인</td></tr>
+<tr><td>25~50%</td><td>경고 구간</td><td>현장 기준과 계측 불확도 검토</td></tr>
+<tr><td>50~100%</td><td>LEL 접근</td><td>농도 상승과 국부 고농도 가능성 주의</td></tr>
+<tr><td>≥100%</td><td>LEL 이상</td><td>가연 가능 구간 진입으로 해석</td></tr>
+</tbody></table>
+</section>
+
+<section id="database">
+<h2 class="sectitle">5. 화학물질 DB</h2>
+<p class="lead">v1.0은 VCM/EDC Balanced Process와 일반 PVC Homopolymer/Copolymer 공정의 공개문헌 기반 1차 Master List를 내장합니다.</p>
+<table><thead><tr><th>상태</th><th>설명</th><th>앱 동작</th></tr></thead><tbody>
+<tr><td>APPROVED</td><td>NIOSH, NOAA, OSHA 등에서 LEL/UEL을 확보한 값</td><td>계산 사용</td></tr>
+<tr><td>REVIEW</td><td>자료원 또는 시험조건 차이가 있는 값</td><td>계산하되 경고 표시</td></tr>
+<tr><td>USER</td><td>사용자가 출처와 함께 등록한 값</td><td>계산하되 사용자 확인 필요</td></tr>
+<tr><td>HOLD</td><td>값 미확정 또는 조건 의존성이 큰 물질</td><td>해당 조성이 0보다 크면 계산 중단</td></tr>
+<tr><td>NONFLAMMABLE</td><td>비가연성 또는 희석성분</td><td>합계와 가연성분 비율에는 포함, 혼합식에서 제외</td></tr>
+<tr><td>OXIDIZER</td><td>산소·염소 등 산화제</td><td>혼합식 제외, 별도 경고</td></tr>
+</tbody></table>
+<h3 class="sub">대표 내장물질</h3>
+<table><thead><tr><th>공정군</th><th>주요 물질</th></tr></thead><tbody>
+<tr><td>VCM/EDC 핵심</td><td>VCM, EDC, Ethylene, HCl, Cl₂</td></tr>
+<tr><td>Oxychlorination</td><td>Methane, Ethane, CO, Methyl chloride, Ethyl chloride, 1,1-DCA, VDC, 1,1,2-TCA, DCM, 2-Chloroethanol, CO₂, H₂O</td></tr>
+<tr><td>EDC 열분해</td><td>VCM, Ethylene, Acetylene, Butadiene, Benzene, Chloroprene, VDC, Ethyl chloride, HCl</td></tr>
+<tr><td>PVC/Copolymer</td><td>VCM, VDC, Vinyl acetate, Propylene, n-Butyl acrylate, 2-EHA, Ethyl acrylate, Acrylonitrile</td></tr>
+<tr><td>Heavy-end</td><td>PCE, Hexachloroethane, 1,1,2,2-Tetrachloroethane, Higher Boilers</td></tr>
+</tbody></table>
+</section>
+
+<section id="limits">
+<h2 class="sectitle">6. 적용 한계와 사용 금지</h2>
+<div class="cards">
+ <div class="card"><b>사용 가능</b><p>정상 공기, 상온·대기압 부근, GC 또는 설계조성이 알려진 혼합가스의 1차 비교.</p></div>
+ <div class="card"><b>상세검토 필요</b><p>산소·CO₂·Steam이 많은 Stream, 고온·고압, 수소계, 반응성·중합성 물질.</p></div>
+ <div class="card"><b>사용 금지</b><p>퍼지 완료, LOC/MOC, Hot Work, 밀폐공간 진입, 폭발방지 최종설계, 검지기 교정.</p></div>
+</div>
+<h3 class="sub">주요 제한조건</h3>
+<table><thead><tr><th>제한</th><th>이유</th><th>대안</th></tr></thead><tbody>
+<tr><td>정상 공기 기준</td><td>산소농도가 달라지면 가연범위가 변함</td><td>삼각 가연도, LOC 시험자료</td></tr>
+<tr><td>상온·대기압 부근</td><td>온도·압력에 따라 LEL/UEL 변화</td><td>ASTM E681/E918 또는 공정조건 자료</td></tr>
+<tr><td>Le Chatelier 근사</td><td>상호작용과 화염속도 차이를 완전히 반영하지 않음</td><td>혼합가스 실험 또는 검증된 모델</td></tr>
+<tr><td>독성 미판정</td><td>폭발한계와 노출기준은 별개</td><td>SDS, OSHA/KOSHA 노출기준</td></tr>
+<tr><td>국부 혼합 불균일 미반영</td><td>실제 Vent 주변에는 농도구배가 존재</td><td>현장 측정, 환기·확산 해석</td></tr>
+</tbody></table>
+<div class="callout danger"><b>아세틸렌 포함 시:</b> 산소가 없어도 분해폭발 가능성이 있으므로 “불활성화되었다”는 결론을 내릴 수 없습니다.</div>
+</section>
+
+<section id="install">
+<h2 class="sectitle">7. 설치와 파일 구성</h2>
+<table><thead><tr><th>파일</th><th>용도</th></tr></thead><tbody>
+<tr><td><code>index.html</code></td><td>계산 앱</td></tr>
+<tr><td><code>ExploLimit_VCM_PVC_Manual.html</code></td><td>현장 사용 설명서</td></tr>
+<tr><td><code>ExploLimit_VCM_PVC_Detailed_Manual.md</code></td><td>상세 계산·DB·검증 문서</td></tr>
+</tbody></table>
+<p>세 파일을 같은 폴더에 두면 앱의 설명서 버튼과 설명서의 앱 실행 버튼이 연결됩니다. 서버 없이 HTML 파일을 직접 열어 사용할 수 있습니다. 사용자 정의 물질은 브라우저의 Local Storage에 저장되므로 브라우저 데이터 삭제 시 함께 삭제됩니다.</p>
+</section>
+
+<section id="sources">
+<h2 class="sectitle">8. 주요 근거자료</h2>
+<ul class="source-list">
+<li><a href="https://www.cdc.gov/niosh/npg/default.html" target="_blank" rel="noopener">NIOSH Pocket Guide to Chemical Hazards</a></li>
+<li><a href="https://cameochemicals.noaa.gov/" target="_blank" rel="noopener">NOAA CAMEO Chemicals</a></li>
+<li><a href="https://www.osha.gov/chemicaldata/search" target="_blank" rel="noopener">OSHA Occupational Chemical Database</a></li>
+<li><a href="https://www.epa.gov/sites/default/files/2020-11/documents/ethylene_dichloride.pdf" target="_blank" rel="noopener">US EPA — Locating and Estimating Sources of Ethylene Dichloride</a></li>
+<li><a href="https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=2000MFVI.TXT" target="_blank" rel="noopener">US EPA — Organic Chemical Manufacturing Selected Processes</a></li>
+<li><a href="https://www.astm.org/e0681-09r15.html" target="_blank" rel="noopener">ASTM E681 — Concentration Limits of Flammability of Chemicals</a></li>
+</ul>
+</section>
+<div class="footer">ExploLimit VCM/PVC v1.0 · 2026-08 · 현장 1차 검토용</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0804" />
+<title>ExploLimit VCM/PVC — Off-gas 폭발한계 1차 검토</title>
+<style>
+:root{
+  --bg:#0f0c08;--bg2:#0a0804;--card:#1a1410;--card2:#221a12;--card3:#1e1810;
+  --line:rgba(255,180,80,.14);--line2:rgba(255,180,80,.08);
+  --txt:#f0e8dc;--txt2:#b8a48a;--txt3:#7a6a54;
+  --accent:#f97316;--accent2:#fb923c;--ok:#22c55e;--warn:#fbbf24;--danger:#ef4444;--info:#38bdf8;
+  --r:13px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans KR","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button,input,select,textarea{font:inherit}.mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+.app{max-width:520px;margin:0 auto;min-height:100vh}
+.hdr{position:sticky;top:0;z-index:40;background:var(--bg2);padding:13px 15px;border-bottom:1px solid var(--line2);box-shadow:0 1px 0 rgba(249,115,22,.25);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hdr-l{display:flex;align-items:center;gap:8px}.hdr-l .ico{font-size:20px}.hdr-l b{font-size:17px}.hdr-r{display:flex;align-items:center;gap:8px}.tag{font-size:10px;color:var(--txt3);text-align:right}.iconbtn{border:1px solid var(--line);background:var(--card2);color:var(--txt2);border-radius:8px;padding:7px 9px;text-decoration:none;font-size:12px;white-space:nowrap}
+.sumbar{position:sticky;top:51px;z-index:35;background:var(--card);padding:9px 14px;border-bottom:1px solid var(--line2);font-size:12px;display:flex;gap:12px;overflow:auto;white-space:nowrap}.sumbar .k{color:var(--txt3)}.sumbar .v{color:var(--txt2)}.sumbar .v.on{color:var(--txt)}
+.body{padding:15px}.intro{background:linear-gradient(135deg,rgba(249,115,22,.14),rgba(251,146,60,.04));border:1px solid rgba(249,115,22,.25);border-radius:12px;padding:13px;margin-bottom:14px}.intro b{font-size:14px}.intro p{margin:5px 0 0;color:var(--txt2);font-size:11px;line-height:1.55}
+.sec{margin:18px 0 8px;display:flex;align-items:center;justify-content:space-between;gap:8px}.sec b{font-size:14px}.sec span{font-size:10px;color:var(--txt3)}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.chip{background:var(--card2);color:var(--txt2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:11px;cursor:pointer}.chip:active{transform:scale(.97)}
+.comp{display:grid;grid-template-columns:minmax(0,1fr) 100px 30px;gap:8px;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;margin-bottom:8px}.cname{min-width:0}.cname .nm{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cname .meta{font-size:9px;color:var(--txt3);margin-top:2px;line-height:1.35}.badge{display:inline-block;border-radius:5px;padding:1px 5px;margin-left:4px;font-size:8px;vertical-align:1px}.b-approved{color:#86efac;border:1px solid rgba(34,197,94,.35);background:rgba(34,197,94,.08)}.b-review{color:#fde68a;border:1px solid rgba(251,191,36,.35);background:rgba(251,191,36,.08)}.b-hold{color:#fca5a5;border:1px solid rgba(239,68,68,.35);background:rgba(239,68,68,.08)}.b-non{color:#7dd3fc;border:1px solid rgba(56,189,248,.3);background:rgba(56,189,248,.07)}
+.pct{display:flex;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:0 8px;height:40px}.pct input{width:100%;border:0;outline:0;background:transparent;color:var(--txt);text-align:right;font-size:14px}.pct span{font-size:10px;color:var(--txt3);margin-left:4px}.del{border:0;background:transparent;color:var(--txt3);font-size:20px;cursor:pointer}.addrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}.addbtn{border:1px dashed rgba(249,115,22,.42);background:var(--card3);color:var(--accent2);border-radius:10px;min-height:44px;cursor:pointer;font-size:12px}.addbtn.secondary{color:var(--txt2);border-color:rgba(184,164,138,.3)}
+.sumchip{display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:9px;padding:9px 11px;font-size:12px;margin-top:9px}.sumchip.ok{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.3);color:#86efac}.sumchip.bad{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.3);color:#fde68a}.sumchip button{border:0;background:transparent;color:inherit;text-decoration:underline;font-size:11px;cursor:pointer}
+.fld{margin-bottom:12px}.fld label{display:block;color:var(--txt2);font-size:11px;margin-bottom:6px}.inwrap{display:flex;align-items:center;background:var(--card2);border:1px solid var(--line);border-radius:9px;min-height:44px;padding:0 11px}.inwrap input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--txt);font-size:14px}.inwrap .u{font-size:10px;color:var(--txt3);margin-left:6px}.note{font-size:10px;color:var(--txt3);line-height:1.5;margin-top:5px}.calc{width:100%;border:0;border-radius:11px;background:var(--accent);color:#fff;min-height:52px;font-weight:700;font-size:15px;cursor:pointer;margin-top:5px}.calc:disabled{opacity:.4;cursor:not-allowed}.calc:active{transform:scale(.99)}
+.result{margin-top:17px}.verdict{border-radius:12px;padding:14px;margin-bottom:11px;display:flex;gap:11px;align-items:flex-start}.verdict .vi{font-size:27px;line-height:1}.verdict b{font-size:16px}.verdict p{margin:4px 0 0;color:var(--txt2);font-size:11px;line-height:1.5}.v-info{background:rgba(56,189,248,.09);border:1px solid rgba(56,189,248,.3)}.v-info .vi,.v-info b{color:#7dd3fc}.v-warn{background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.32)}.v-warn .vi,.v-warn b{color:#fde68a}.v-danger{background:rgba(239,68,68,.09);border:1px solid rgba(239,68,68,.35)}.v-danger .vi,.v-danger b{color:#fca5a5}.v-ok{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.28)}.v-ok .vi,.v-ok b{color:#86efac}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:11px}.metric{background:var(--card);border-radius:10px;padding:11px;min-height:82px}.metric.wide{grid-column:1/3}.metric .mk{font-size:10px;color:var(--txt3)}.metric .mv{font-size:18px;margin-top:4px;font-family:"SFMono-Regular",Consolas,monospace}.metric .ma{font-size:9px;color:var(--txt3);margin-top:4px;line-height:1.4}.metric.warn{border:1px solid rgba(251,191,36,.3)}.metric.danger{border:1px solid rgba(239,68,68,.35)}
+.gauge{background:var(--card);border-radius:12px;padding:13px;margin-bottom:11px}.gtitle{display:flex;justify-content:space-between;font-size:11px;color:var(--txt2);margin-bottom:9px}.bar{height:26px;border-radius:7px;background:var(--bg2);position:relative;overflow:hidden;border:1px solid var(--line)}.bar .z1,.bar .z2,.bar .z3,.bar .mkline{position:absolute;top:0;bottom:0}.bar .z1{left:0;background:rgba(56,189,248,.16)}.bar .z2{background:rgba(251,191,36,.22)}.bar .z3{background:rgba(239,68,68,.28)}.bar .mkline{width:2px;background:#fff;z-index:2}.bar .mkline.current{background:var(--accent)}.barlabel{display:flex;justify-content:space-between;color:var(--txt3);font-size:9px;margin-top:5px}
+.toggle{width:100%;background:var(--card);border:1px solid var(--line);color:var(--txt2);border-radius:9px;padding:10px;font-size:11px;cursor:pointer;margin-bottom:8px}.details{display:none;background:var(--card);border-radius:10px;padding:11px;margin-bottom:10px}.details.show{display:block}.dl{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--line2);font-size:11px}.dl:last-child{border-bottom:0}.dl .dk{color:var(--txt3)}.dl .dv{text-align:right}.calc-table{width:100%;border-collapse:collapse;font-size:10px;margin-top:8px}.calc-table th,.calc-table td{border-bottom:1px solid var(--line2);padding:6px 3px;text-align:right}.calc-table th:first-child,.calc-table td:first-child{text-align:left}.calc-table th{color:var(--txt3);font-weight:500}
+.disclaimer{margin-top:11px;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.23);border-radius:9px;padding:10px 11px;color:#fde68a;font-size:10px;line-height:1.58}
+.footer{padding:20px 15px 30px;text-align:center;color:var(--txt3);font-size:9px}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:70;display:none;align-items:flex-end}.scrim.show{display:flex}.sheet{width:100%;max-width:520px;margin:0 auto;background:var(--card);border-radius:17px 17px 0 0;max-height:84vh;display:flex;flex-direction:column;padding-bottom:calc(8px + env(safe-area-inset-bottom))}.sheet-hd{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--line2)}.sheet-hd b{font-size:14px}.sheet-hd button{border:0;background:transparent;color:var(--txt3);cursor:pointer}.search{padding:11px 14px}.search input{width:100%;height:42px;background:var(--card2);border:1px solid var(--line);border-radius:9px;color:var(--txt);padding:0 11px;outline:0}.filters{padding:0 14px 9px;display:flex;gap:5px;overflow:auto}.filter{flex:0 0 auto;border:1px solid var(--line);background:var(--card2);color:var(--txt3);border-radius:7px;padding:6px 8px;font-size:9px}.filter.on{color:var(--accent2);border-color:rgba(249,115,22,.5);background:rgba(249,115,22,.08)}.list{overflow:auto;padding:0 7px 8px}.item{padding:11px 10px;border-radius:9px;display:flex;justify-content:space-between;gap:10px;cursor:pointer}.item:active{background:var(--card2)}.item .fn{font-size:13px}.item .ft{font-size:9px;color:var(--txt3);margin-top:2px;line-height:1.4}.item .fr{text-align:right;font-size:9px;color:var(--txt3);white-space:nowrap}.group{font-size:9px;color:var(--accent2);padding:10px 10px 3px}.nores{text-align:center;color:var(--txt3);font-size:11px;padding:25px;line-height:1.6}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:80;display:none;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}.modal-card{width:100%;max-width:470px;max-height:92vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.modal-card h3{margin:0 0 5px;font-size:15px}.modal-card>p{margin:0 0 13px;color:var(--txt3);font-size:10px;line-height:1.5}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.modal-card input,.modal-card select,.modal-card textarea{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:9px;outline:0;font-size:12px}.modal-card textarea{min-height:65px;resize:vertical}.mact{display:flex;gap:8px;margin-top:12px}.mact button{flex:1;min-height:42px;border-radius:9px;cursor:pointer}.cancel{border:1px solid var(--line);background:var(--card2);color:var(--txt2)}.save{border:0;background:var(--accent);color:white;font-weight:700}
+@media (min-width:760px){.app{max-width:760px}.body{padding:18px 22px}.sheet{max-width:760px}.metrics{grid-template-columns:repeat(4,1fr)}.metric.wide{grid-column:span 2}}
+@media print{.hdr,.sumbar,.presets,.addrow,.calc,.footer,.iconbtn{display:none!important}.body{padding:0}.result{display:block!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hdr">
+    <div class="hdr-l"><span class="ico">🔥</span><b>ExploLimit VCM/PVC</b></div>
+    <div class="hdr-r"><span class="tag">Off-gas LEL/UEL<br>정상 공기 · 1차 검토</span><a class="iconbtn" href="ExploLimit_VCM_PVC_Manual.html">설명서</a></div>
+  </header>
+  <div class="sumbar">
+    <span><span class="k">Fuel LEL </span><span class="v" id="sFuelLel">—</span></span>
+    <span><span class="k">Stream LEL </span><span class="v" id="sStreamLel">—</span></span>
+    <span><span class="k">상태 </span><span class="v" id="sState">—</span></span>
+  </div>
+  <main class="body">
+    <section class="intro">
+      <b>용도: VCM·PVC 공정 Off-gas의 가연성 1차 선별</b>
+      <p>GC 또는 물질수지 조성을 입력하면 Le Chatelier 혼합법칙으로 가연성분 기준 LEL/UEL을 계산합니다. 불활성 성분이 포함된 전체 Off-gas의 LEL은 단순 희석 환산값으로 표시합니다. 퍼지 완료, LOC/MOC, 작업허가 및 검지기 보정 판정에는 사용하지 않습니다.</p>
+    </section>
+
+    <div class="sec"><b>조성 입력</b><span id="compCount">0종</span></div>
+    <div class="presets">
+      <button class="chip" data-preset="pvc">PVC 탈기 Vent 예시</button>
+      <button class="chip" data-preset="recovery">VCM 회수 Vent 예시</button>
+      <button class="chip" data-preset="cracking">EDC 열분해 Light-end 예시</button>
+      <button class="chip" data-preset="clear">초기화</button>
+    </div>
+    <div id="compList"></div>
+    <div class="addrow">
+      <button class="addbtn" id="addBtn">＋ DB 물질 추가</button>
+      <button class="addbtn secondary" id="customBtn">＋ 사용자 정의 물질</button>
+    </div>
+    <div class="sumchip bad" id="sumChip" style="display:none">
+      <span>조성 합계 <b class="mono" id="sumVal">0.0</b> vol%</span>
+      <button id="normBtn">100%로 정규화</button>
+    </div>
+
+    <div class="sec"><b>현재 주변농도 비교</b><span>선택 입력</span></div>
+    <div class="fld">
+      <label>주변 공기 중 전체 Off-gas 농도</label>
+      <div class="inwrap"><input id="ambientConc" inputmode="decimal" placeholder="예: 0.50" /><span class="u">vol%</span></div>
+      <div class="note">GC, 누출·환기 계산 등으로 얻은 전체 Off-gas 농도입니다. 휴대용 검지기의 %LEL 표시값을 입력하는 칸이 아닙니다.</div>
+    </div>
+
+    <button class="calc" id="calcBtn">폭발한계 1차 계산</button>
+    <section class="result" id="result" style="display:none"></section>
+  </main>
+  <footer class="footer">ExploLimit VCM/PVC v1.0 · 브라우저 내부 계산 · 데이터는 서버로 전송되지 않음</footer>
+</div>
+
+<div class="scrim" id="gasScrim">
+  <div class="sheet">
+    <div class="sheet-hd"><b>공정 물질 선택</b><button id="gasClose">닫기</button></div>
+    <div class="search"><input id="gasSearch" placeholder="물질명·CAS·분자식 검색" /></div>
+    <div class="filters" id="filters"></div>
+    <div class="list" id="gasList"></div>
+  </div>
+</div>
+
+<div class="modal" id="customModal">
+  <div class="modal-card">
+    <h3>사용자 정의 물질</h3>
+    <p>LEL/UEL은 분자식으로 자동 산출하지 않습니다. SDS·NIOSH·NOAA·시험성적서 등 확인된 문헌값을 직접 입력하고 출처를 기록하세요.</p>
+    <div class="grid2">
+      <div class="fld"><label>물질명 *</label><input id="cName" /></div>
+      <div class="fld"><label>CAS 번호</label><input id="cCas" placeholder="000-00-0" /></div>
+      <div class="fld"><label>분자식</label><input id="cFormula" /></div>
+      <div class="fld"><label>분류 *</label><select id="cType"><option value="flammable">가연성</option><option value="nonflammable">비가연/희석</option><option value="oxidizer">산화제</option></select></div>
+      <div class="fld" id="cLelFld"><label>LEL vol% *</label><input id="cLel" inputmode="decimal" /></div>
+      <div class="fld" id="cUelFld"><label>UEL vol% *</label><input id="cUel" inputmode="decimal" /></div>
+      <div class="fld"><label>자료상태</label><select id="cStatus"><option value="USER">사용자 확인값</option><option value="REVIEW">검토 필요</option><option value="HOLD">자료 미확정</option></select></div>
+      <div class="fld"><label>공정 태그</label><input id="cTag" placeholder="예: PVC COPOLYMER" /></div>
+    </div>
+    <div class="fld"><label>출처 URL 또는 문서명 *</label><textarea id="cSource"></textarea></div>
+    <div class="mact"><button class="cancel" id="customCancel">취소</button><button class="save" id="customSave">저장 후 추가</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const fmt=(n,d=2)=>Number.isFinite(n)?(Math.round(n*10**d)/10**d).toString():"—";
+const esc=s=>String(s??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+
+const SOURCES={
+ NIOSH:"https://www.cdc.gov/niosh/npg/default.html",
+ EPA_EDC:"https://www.epa.gov/sites/default/files/2020-11/documents/ethylene_dichloride.pdf",
+ EPA_PROCESS:"https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=2000MFVI.TXT",
+ NOAA:"https://cameochemicals.noaa.gov/",
+ OSHA:"https://www.osha.gov/chemicaldata/search",
+ ASTM:"https://www.astm.org/e0681-09r15.html"
+};
+
+// status: APPROVED | REVIEW | HOLD | NONFLAMMABLE | OXIDIZER
+// LEL/UEL은 정상 공기, 상온·대기압 부근의 문헌값. REVIEW/HOLD는 결과에 경고 또는 계산 차단.
+const BASE_DB={
+ VCM:{name:"염화비닐 (VCM)",en:"Vinyl chloride",cas:"75-01-4",formula:"C₂H₃Cl",type:"flammable",lel:3.6,uel:33,status:"APPROVED",process:["CORE","PVC","PYROLYSIS"],source:"NIOSH Pocket Guide",url:"https://www.cdc.gov/niosh/npg/npgd0658.html",hazards:["발암성","중합성"]},
+ EDC:{name:"1,2-이염화에탄 (EDC)",en:"1,2-Dichloroethane",cas:"107-06-2",formula:"C₂H₄Cl₂",type:"flammable",lel:6.2,uel:16,status:"APPROVED",process:["CORE","OXY","PYROLYSIS"],source:"NIOSH Pocket Guide",url:"https://www.cdc.gov/niosh/npg/npgd0271.html",hazards:["독성"]},
+ METHANE:{name:"메탄",en:"Methane",cas:"74-82-8",formula:"CH₄",type:"flammable",lel:5,uel:15,status:"APPROVED",process:["OXY","GENERAL"],source:"NIOSH/NOAA",url:"https://cameochemicals.noaa.gov/report?key=CH8823",hazards:[]},
+ ETHANE:{name:"에탄",en:"Ethane",cas:"74-84-0",formula:"C₂H₆",type:"flammable",lel:3.0,uel:12.5,status:"APPROVED",process:["OXY","GENERAL"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/8619",hazards:[]},
+ ETHYLENE:{name:"에틸렌",en:"Ethylene",cas:"74-85-1",formula:"C₂H₄",type:"flammable",lel:2.7,uel:36,status:"REVIEW",process:["CORE","OXY","PYROLYSIS","COPOLYMER"],source:"ICSC/공정 SDS 최종 확인",url:"https://www.inchem.org/documents/icsc/icsc/eics0475.htm",hazards:["UEL 자료원 차이"]},
+ CO:{name:"일산화탄소",en:"Carbon monoxide",cas:"630-08-0",formula:"CO",type:"flammable",lel:12.5,uel:74,status:"APPROVED",process:["OXY"],source:"NIOSH/NOAA",url:"https://m.cameochemicals.noaa.gov/chemical/336",hazards:["고독성"]},
+ METHYL_CHLORIDE:{name:"염화메틸",en:"Methyl chloride",cas:"74-87-3",formula:"CH₃Cl",type:"flammable",lel:8.1,uel:17.2,status:"APPROVED",process:["OXY","PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/",hazards:["독성"]},
+ ETHYL_CHLORIDE:{name:"염화에틸",en:"Ethyl chloride",cas:"75-00-3",formula:"C₂H₅Cl",type:"flammable",lel:3.8,uel:15.4,status:"APPROVED",process:["OXY","PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/674",hazards:[]},
+ DCA11:{name:"1,1-이염화에탄",en:"1,1-Dichloroethane",cas:"75-34-3",formula:"C₂H₄Cl₂",type:"flammable",lel:5.6,uel:11.4,status:"APPROVED",process:["OXY","PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/3148",hazards:["독성"]},
+ VDC:{name:"염화비닐리덴 (VDC)",en:"Vinylidene chloride",cas:"75-35-4",formula:"C₂H₂Cl₂",type:"flammable",lel:7.3,uel:16,status:"APPROVED",process:["OXY","PYROLYSIS","COPOLYMER"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/4772",hazards:["중합성"]},
+ TCA111:{name:"1,1,1-트리클로로에탄",en:"1,1,1-Trichloroethane",cas:"71-55-6",formula:"C₂H₃Cl₃",type:"flammable",lel:7.5,uel:12.5,status:"REVIEW",process:["PYROLYSIS"],source:"NOAA CAMEO / 조건 확인",url:"https://cameochemicals.noaa.gov/chemical/1629",hazards:["조건 의존성"]},
+ TCA112:{name:"1,1,2-트리클로로에탄",en:"1,1,2-Trichloroethane",cas:"79-00-5",formula:"C₂H₃Cl₃",type:"flammable",lel:6.0,uel:15.5,status:"APPROVED",process:["OXY"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/10031",hazards:["독성"]},
+ DCM:{name:"염화메틸렌 (DCM)",en:"Dichloromethane",cas:"75-09-2",formula:"CH₂Cl₂",type:"flammable",lel:13,uel:23,status:"REVIEW",process:["OXY"],source:"NIOSH 13–23%; NOAA 자료 차이",url:"https://www.cdc.gov/niosh/npg/npgd0414.html",hazards:["일반 조건 점화 어려움","자료원 차이"]},
+ CHLOROETHANOL2:{name:"2-클로로에탄올",en:"2-Chloroethanol",cas:"107-07-3",formula:"C₂H₅ClO",type:"flammable",lel:4.9,uel:15.9,status:"APPROVED",process:["OXY"],source:"NIOSH Pocket Guide",url:"https://www.cdc.gov/niosh/npg/npgd0268.html",hazards:["고독성"]},
+ ACETYLENE:{name:"아세틸렌",en:"Acetylene",cas:"74-86-2",formula:"C₂H₂",type:"flammable",lel:2.5,uel:100,status:"APPROVED",process:["PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/18",hazards:["SELF_DECOMPOSITION","산소 없이 분해폭발 가능"]},
+ BUTADIENE:{name:"1,3-부타디엔",en:"1,3-Butadiene",cas:"106-99-0",formula:"C₄H₆",type:"flammable",lel:2.0,uel:11.5,status:"APPROVED",process:["PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/4891",hazards:["중합성","발암성"]},
+ BENZENE:{name:"벤젠",en:"Benzene",cas:"71-43-2",formula:"C₆H₆",type:"flammable",lel:1.2,uel:7.8,status:"APPROVED",process:["PYROLYSIS","HEAVY"],source:"NIOSH Pocket Guide",url:"https://www.cdc.gov/niosh/npg/npgd0049.html",hazards:["발암성"]},
+ CHLOROPRENE:{name:"클로로프렌",en:"Chloroprene",cas:"126-99-8",formula:"C₄H₅Cl",type:"flammable",lel:4.0,uel:20,status:"APPROVED",process:["PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/391",hazards:["중합성"]},
+ PROPYLENE:{name:"프로필렌",en:"Propylene",cas:"115-07-1",formula:"C₃H₆",type:"flammable",lel:2.0,uel:11.1,status:"APPROVED",process:["COPOLYMER"],source:"OSHA Chemical Database",url:"https://www.osha.gov/chemicaldata/138",hazards:[]},
+ VINYL_ACETATE:{name:"초산비닐 (VAc)",en:"Vinyl acetate",cas:"108-05-4",formula:"C₄H₆O₂",type:"flammable",lel:2.6,uel:13.4,status:"APPROVED",process:["COPOLYMER"],source:"OSHA Chemical Database",url:"https://www.osha.gov/chemicaldata/74",hazards:["중합성"]},
+ N_BUTYL_ACRYLATE:{name:"n-부틸아크릴레이트",en:"n-Butyl acrylate",cas:"141-32-2",formula:"C₇H₁₂O₂",type:"flammable",lel:1.5,uel:9.9,status:"APPROVED",process:["COPOLYMER"],source:"OSHA Chemical Database",url:"https://www.osha.gov/chemicaldata/260",hazards:["중합성"]},
+ EHA2:{name:"2-에틸헥실아크릴레이트",en:"2-Ethylhexyl acrylate",cas:"103-11-7",formula:"C₁₁H₂₀O₂",type:"flammable",lel:0.8,uel:6.4,status:"APPROVED",process:["COPOLYMER"],source:"OSHA Chemical Database",url:"https://www.osha.gov/chemicaldata/826",hazards:["중합성"]},
+ ETHYL_ACRYLATE:{name:"에틸아크릴레이트",en:"Ethyl acrylate",cas:"140-88-5",formula:"C₅H₈O₂",type:"flammable",lel:1.8,uel:14,status:"REVIEW",process:["COPOLYMER"],source:"NOAA/OSHA 자료원 차이",url:"https://cameochemicals.noaa.gov/chemical/666",hazards:["중합성","자료원 차이"]},
+ ACRYLONITRILE:{name:"아크릴로니트릴",en:"Acrylonitrile",cas:"107-13-1",formula:"C₃H₃N",type:"flammable",lel:3.0,uel:17,status:"APPROVED",process:["COPOLYMER"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/4849",hazards:["발암성","중합성"]},
+
+ CIS_DCE:{name:"cis-1,2-이염화에틸렌",en:"cis-1,2-Dichloroethylene",cas:"156-59-2",formula:"C₂H₂Cl₂",type:"flammable",lel:null,uel:null,status:"HOLD",process:["OXY"],source:"자료원 불일치 — 공장 SDS/시험값 필요",url:"https://cameochemicals.noaa.gov/chemical/542",hazards:["LEL/UEL 미확정"]},
+ TRANS_DCE:{name:"trans-1,2-이염화에틸렌",en:"trans-1,2-Dichloroethylene",cas:"156-60-5",formula:"C₂H₂Cl₂",type:"flammable",lel:null,uel:null,status:"HOLD",process:["OXY"],source:"자료원 불일치 — 공장 SDS/시험값 필요",url:"https://cameochemicals.noaa.gov/chemical/17858",hazards:["LEL/UEL 미확정"]},
+ TCE:{name:"트리클로로에틸렌 (TCE)",en:"Trichloroethylene",cas:"79-01-6",formula:"C₂HCl₃",type:"flammable",lel:null,uel:null,status:"HOLD",process:["OXY","COPOLYMER"],source:"점화·온도 조건 의존 — 시험조건 확인 필요",url:"https://cameochemicals.noaa.gov/report?key=CH4680",hazards:["조건 의존성"]},
+ VINYLACETYLENE:{name:"비닐아세틸렌",en:"Vinylacetylene",cas:"689-97-4",formula:"C₄H₄",type:"flammable",lel:null,uel:null,status:"HOLD",process:["PYROLYSIS"],source:"공신력 LEL/UEL 미확보",url:"https://cameochemicals.noaa.gov/chemical/18050",hazards:["고반응성","자료 미확정"]},
+ CHLORAL:{name:"클로랄",en:"Chloral",cas:"75-87-6",formula:"C₂HCl₃O",type:"flammable",lel:null,uel:null,status:"HOLD",process:["OXY"],source:"공신력 LEL/UEL 미확보",url:SOURCES.NOAA,hazards:["자료 미확정"]},
+ TETRACHLOROETHANE:{name:"1,1,2,2-테트라클로로에탄",en:"1,1,2,2-Tetrachloroethane",cas:"79-34-5",formula:"C₂H₂Cl₄",type:"flammable",lel:null,uel:null,status:"HOLD",process:["HEAVY"],source:"LEL/UEL 미확보",url:"https://cameochemicals.noaa.gov/chemical/1568",hazards:["자료 미확정"]},
+ UNKNOWN_HEAVY:{name:"고비점 염소화물 (Higher Boilers)",en:"Higher chlorinated boilers",cas:"혼합물",formula:"혼합물",type:"flammable",lel:null,uel:null,status:"HOLD",process:["HEAVY"],source:"공장별 조성 분석 필요",url:SOURCES.EPA_EDC,hazards:["혼합물 조성 미확정"]},
+
+ N2:{name:"질소",en:"Nitrogen",cas:"7727-37-9",formula:"N₂",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["CORE","PVC","OXY","PYROLYSIS"],source:"비가연 희석가스",url:SOURCES.NIOSH,hazards:["산소결핍"]},
+ CO2:{name:"이산화탄소",en:"Carbon dioxide",cas:"124-38-9",formula:"CO₂",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["OXY"],source:"산화염소화 부반응",url:SOURCES.EPA_EDC,hazards:["질식"]},
+ WATER:{name:"수증기/물",en:"Water vapor",cas:"7732-18-5",formula:"H₂O",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["OXY","PVC"],source:"반응생성물·Steam stripping",url:SOURCES.EPA_EDC,hazards:[]},
+ HCL:{name:"염화수소",en:"Hydrogen chloride",cas:"7647-01-0",formula:"HCl",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["CORE","PYROLYSIS"],source:"EDC 열분해 생성물",url:"https://cameochemicals.noaa.gov/chemical/8731",hazards:["고독성","부식성"]},
+ CL2:{name:"염소",en:"Chlorine",cas:"7782-50-5",formula:"Cl₂",type:"oxidizer",lel:null,uel:null,status:"OXIDIZER",process:["CORE"],source:"Direct chlorination 원료",url:SOURCES.NIOSH,hazards:["강산화성","고독성"]},
+ O2:{name:"산소",en:"Oxygen",cas:"7782-44-7",formula:"O₂",type:"oxidizer",lel:null,uel:null,status:"OXIDIZER",process:["OXY"],source:"Oxychlorination 원료/잔류",url:SOURCES.NIOSH,hazards:["산화성"]},
+ CHLOROFORM:{name:"클로로포름",en:"Chloroform",cas:"67-66-3",formula:"CHCl₃",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["OXY","PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/2893",hazards:["독성"]},
+ CCL4:{name:"사염화탄소",en:"Carbon tetrachloride",cas:"56-23-5",formula:"CCl₄",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["OXY","PYROLYSIS"],source:"NOAA CAMEO",url:"https://cameochemicals.noaa.gov/chemical/2828",hazards:["고독성"]},
+ PCE:{name:"퍼클로로에틸렌 (PCE)",en:"Tetrachloroethylene",cas:"127-18-4",formula:"C₂Cl₄",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["HEAVY"],source:"EPA/NOAA",url:"https://www.epa.gov/sites/default/files/2020-11/documents/perchloroethylene-trichloroethylene.pdf",hazards:["독성"]},
+ HEXACHLOROETHANE:{name:"헥사클로로에탄",en:"Hexachloroethane",cas:"67-72-1",formula:"C₂Cl₆",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["HEAVY"],source:"NIOSH Pocket Guide",url:"https://www.cdc.gov/niosh/npg/npgd0316.html",hazards:["독성"]},
+ AIR:{name:"공기/미확인 Balance",en:"Air / uncharacterized balance",cas:"혼합물",formula:"Air",type:"nonflammable",lel:null,uel:null,status:"NONFLAMMABLE",process:["GENERAL"],source:"사용자 입력 Balance",url:"",hazards:["미확인 성분이면 결과 신뢰도 저하"]}
+};
+
+let userDB={};
+try{userDB=JSON.parse(localStorage.getItem("explolimitCustomDB")||"{}");}catch(_){userDB={};}
+const DB=()=>({...BASE_DB,...userDB});
+let comps=[];
+let activeFilter="ALL";
+const FILTERS=[
+ ["ALL","전체"],["CORE","VCM/EDC 핵심"],["OXY","Oxychlorination"],["PYROLYSIS","EDC 열분해"],["PVC","PVC"],["COPOLYMER","Copolymer"],["HEAVY","Heavy-end"],["HOLD","HOLD"],["NON","비가연/산화제"]
+];
+const PRESETS={
+ pvc:[{key:"VCM",pct:25},{key:"N2",pct:75}],
+ recovery:[{key:"VCM",pct:70},{key:"EDC",pct:5},{key:"ETHYLENE",pct:5},{key:"N2",pct:20}],
+ cracking:[{key:"VCM",pct:35},{key:"ETHYLENE",pct:20},{key:"ACETYLENE",pct:3},{key:"ETHYL_CHLORIDE",pct:5},{key:"HCL",pct:25},{key:"N2",pct:12}],
+ clear:[]
+};
+
+function statusBadge(g){
+ const map={APPROVED:["문헌값","b-approved"],USER:["사용자값","b-approved"],REVIEW:["REVIEW","b-review"],HOLD:["HOLD","b-hold"],NONFLAMMABLE:["비가연","b-non"],OXIDIZER:["산화제","b-review"]};
+ const [t,c]=map[g.status]||[g.status,"b-review"];return `<span class="badge ${c}">${t}</span>`;
+}
+function typeMeta(g){
+ if(g.type==="flammable") return g.lel!=null?`LEL ${fmt(g.lel,2)} · UEL ${fmt(g.uel,2)} vol%`:`LEL/UEL 미확정`;
+ if(g.type==="oxidizer") return "산화제 — 가연성분 계산 제외";
+ return "비가연/희석 — 가연성분 계산 제외";
+}
+function renderComps(){
+ const db=DB(),wrap=$("compList");wrap.innerHTML="";
+ comps.forEach((c,i)=>{
+  const g=db[c.key];if(!g)return;
+  const d=document.createElement("div");d.className="comp";
+  d.innerHTML=`<div class="cname"><div class="nm">${esc(g.name)} ${statusBadge(g)}</div><div class="meta">${esc(g.formula)} · CAS ${esc(g.cas)} · ${esc(typeMeta(g))}</div></div><div class="pct"><input inputmode="decimal" value="${c.pct}" data-i="${i}"><span>%</span></div><button class="del" data-i="${i}" aria-label="삭제">×</button>`;
+  wrap.appendChild(d);
+ });
+ wrap.querySelectorAll(".pct input").forEach(x=>x.addEventListener("input",e=>{comps[+e.target.dataset.i].pct=Math.max(0,parseFloat(e.target.value)||0);updateSum();}));
+ wrap.querySelectorAll(".del").forEach(x=>x.addEventListener("click",e=>{comps.splice(+e.target.dataset.i,1);renderComps();}));
+ $("compCount").textContent=`${comps.length}종`;
+ updateSum();
+}
+function updateSum(){
+ const total=comps.reduce((s,c)=>s+(+c.pct||0),0),chip=$("sumChip");
+ if(!comps.length){chip.style.display="none";return;}
+ chip.style.display="flex";$("sumVal").textContent=fmt(total,2);chip.className="sumchip "+(Math.abs(total-100)<=.05?"ok":"bad");
+}
+function normalize(){
+ const total=comps.reduce((s,c)=>s+(+c.pct||0),0);if(total<=0)return;
+ let sum=0;comps.forEach((c,i)=>{if(i===comps.length-1)c.pct=Math.round((100-sum)*1000)/1000;else{c.pct=Math.round(c.pct/total*100000)/1000;sum+=c.pct;}});renderComps();
+}
+
+function openGas(){renderFilters();renderGasList("");$("gasSearch").value="";$("gasScrim").classList.add("show");}
+function renderFilters(){
+ const w=$("filters");w.innerHTML="";FILTERS.forEach(([k,l])=>{const b=document.createElement("button");b.className="filter"+(activeFilter===k?" on":"");b.textContent=l;b.onclick=()=>{activeFilter=k;renderFilters();renderGasList($("gasSearch").value)};w.appendChild(b);});
+}
+function matchFilter(g){
+ if(activeFilter==="ALL")return true;if(activeFilter==="HOLD")return g.status==="HOLD";if(activeFilter==="NON")return g.type!=="flammable";return (g.process||[]).includes(activeFilter);
+}
+function renderGasList(q){
+ const db=DB(),list=$("gasList");list.innerHTML="";q=(q||"").trim().toLowerCase();
+ const entries=Object.entries(db).filter(([k,g])=>matchFilter(g)&&(!q||[k,g.name,g.en,g.cas,g.formula].join(" ").toLowerCase().includes(q)));
+ if(!entries.length){list.innerHTML='<div class="nores">검색 결과가 없습니다.<br>문헌 LEL/UEL이 있으면 사용자 정의 물질로 등록하세요.</div>';return;}
+ const order={flammable:0,oxidizer:1,nonflammable:2};entries.sort((a,b)=>(order[a[1].type]-order[b[1].type])||a[1].name.localeCompare(b[1].name,"ko"));
+ let last="";entries.forEach(([k,g])=>{
+  const group=g.type==="flammable"?"가연성 물질":g.type==="oxidizer"?"산화제":"비가연·희석 성분";
+  if(group!==last){const h=document.createElement("div");h.className="group";h.textContent=group;list.appendChild(h);last=group;}
+  const d=document.createElement("div");d.className="item";
+  d.innerHTML=`<div><div class="fn">${esc(g.name)} ${statusBadge(g)}</div><div class="ft">${esc(g.en)} · ${esc(g.formula)} · CAS ${esc(g.cas)}<br>${esc(typeMeta(g))}</div></div><div class="fr">${esc((g.process||[]).join(" · "))}</div>`;
+  d.onclick=()=>{if(!comps.some(c=>c.key===k))comps.push({key:k,pct:0});$("gasScrim").classList.remove("show");renderComps();};list.appendChild(d);
+ });
+}
+
+function calcMixture(){
+ const db=DB();
+ const total=comps.reduce((s,c)=>s+(+c.pct||0),0);
+ if(comps.length===0)return{err:"물질을 1종 이상 추가하세요."};
+ if(Math.abs(total-100)>.05)return{err:`조성 합계를 100%로 맞추세요. 현재 ${fmt(total,2)}%.`};
+ const positive=comps.filter(c=>c.pct>0).map(c=>({...c,g:db[c.key]}));
+ const hold=positive.filter(c=>c.g.status==="HOLD"||c.g.type==="flammable"&&(!Number.isFinite(c.g.lel)||!Number.isFinite(c.g.uel)));
+ if(hold.length)return{err:"LEL/UEL 미확정 물질이 포함되어 계산을 보류합니다.",hold};
+ const flam=positive.filter(c=>c.g.type==="flammable");
+ if(!flam.length)return{err:"가연성 물질이 없습니다."};
+ const flamPct=flam.reduce((s,c)=>s+c.pct,0);const flamFrac=flamPct/100;
+ let sumL=0,sumU=0;
+ const contributions=flam.map(c=>{const z=c.pct/flamPct;const l=z/c.g.lel,u=z/c.g.uel;sumL+=l;sumU+=u;return{...c,z,l,u};});
+ const fuelLEL=1/sumL,fuelUEL=1/sumU;
+ const streamLEL=fuelLEL/flamFrac;
+ const nonFlamPct=100-flamPct;
+ const oxidPct=positive.filter(c=>c.g.type==="oxidizer").reduce((s,c)=>s+c.pct,0);
+ const review=positive.filter(c=>["REVIEW"].includes(c.g.status));
+ const user=positive.filter(c=>c.g.status==="USER");
+ const special=positive.filter(c=>(c.g.hazards||[]).includes("SELF_DECOMPOSITION"));
+ const unknownBalance=positive.filter(c=>c.key==="AIR");
+ // 전체 Stream UEL은 비가연/산화제 성분이 사실상 없을 때만 단순 표시.
+ const streamUELAvailable=nonFlamPct<=.05;
+ const streamUEL=streamUELAvailable?fuelUEL:null;
+ return{total,positive,flam,flamPct,flamFrac,nonFlamPct,oxidPct,review,user,special,unknownBalance,contributions,fuelLEL,fuelUEL,streamLEL,streamUEL,streamUELAvailable};
+}
+function ambientState(r){
+ const x=parseFloat($("ambientConc").value);if(!Number.isFinite(x))return null;
+ if(x<0||x>100)return{err:"현재 주변농도는 0~100 vol% 범위로 입력하세요."};
+ const pctLEL=x/r.streamLEL*100;
+ let cls="v-info",title="LEL 미만 추정",desc="현재 계산농도는 전체 Off-gas 기준 단순 환산 LEL보다 낮습니다. 독성·산소결핍·국부 고농도 위험은 별도입니다.";
+ if(pctLEL>=100){cls="v-danger";title="LEL 이상 — 가연 가능 구간 진입";desc=r.streamUELAvailable&&x>r.streamUEL?"UEL 초과 추정 상태입니다. 공기 유입·희석 과정에서 가연범위를 통과할 수 있습니다.":"전체 Off-gas 농도가 단순 환산 LEL 이상입니다. 점화원 차단 및 정밀 가연성 검토가 필요합니다.";}
+ else if(pctLEL>=50){cls="v-warn";title="LEL 접근";desc="계산상 LEL의 50% 이상입니다. 농도 상승·계측오차·혼합 불균일을 고려해 원인과 환기를 확인하세요.";}
+ else if(pctLEL>=25){cls="v-warn";title="경고 구간";desc="계산상 LEL의 25% 이상입니다. 현장 기준과 계측 불확도를 함께 검토하세요.";}
+ else if(pctLEL>=10){cls="v-info";title="주의 구간";desc="계산상 LEL의 10% 이상입니다. 누출원과 환기 상태를 확인하세요.";}
+ return{x,pctLEL,cls,title,desc};
+}
+function calculate(){
+ const r=calcMixture(),res=$("result");res.style.display="block";
+ if(r.err){
+  let detail="";if(r.hold)detail=`<p>${r.hold.map(c=>esc(c.g.name)).join(", ")} — 사용자 정의 문헌값을 등록하거나 공장 SDS/시험값을 확인하세요.</p>`;
+  res.innerHTML=`<div class="verdict v-danger"><div class="vi">⏸</div><div><b>계산 HOLD</b><p>${esc(r.err)}</p>${detail}</div></div>`;updateSummary(null,"HOLD");res.scrollIntoView({behavior:"smooth",block:"nearest"});return;
+ }
+ const a=ambientState(r);if(a?.err){res.innerHTML=`<div class="verdict v-danger"><div class="vi">⚠</div><div><b>입력 확인</b><p>${esc(a.err)}</p></div></div>`;return;}
+ let quality="문헌값";if(r.review.length)quality="REVIEW";if(r.user.length)quality=r.review.length?"REVIEW+USER":"USER";
+ let html=`<div class="verdict ${r.review.length?'v-warn':'v-info'}"><div class="vi">∑</div><div><b>혼합가스 계산 완료 · ${quality}</b><p>가연성분 ${fmt(r.flamPct,2)}%, 비가연·산화제 ${fmt(r.nonFlamPct,2)}%. Le Chatelier 혼합법칙을 적용한 정상 공기 기준 1차 추정입니다.</p></div></div>`;
+ if(a)html+=`<div class="verdict ${a.cls}"><div class="vi">${a.pctLEL>=100?'!':'%'}</div><div><b>${a.title}</b><p>현재 ${fmt(a.x,3)} vol% = 계산 LEL의 ${fmt(a.pctLEL,1)}%. ${a.desc}</p></div></div>`;
+ if(r.special.length)html+=`<div class="verdict v-danger"><div class="vi">⚡</div><div><b>자기분해 위험 물질 포함</b><p>${r.special.map(c=>esc(c.g.name)).join(", ")}은 산소가 없어도 분해폭발이 가능할 수 있습니다. 일반 LEL/UEL·불활성화 안전판정을 적용하지 마세요.</p></div></div>`;
+ if(r.review.length)html+=`<div class="verdict v-warn"><div class="vi">△</div><div><b>REVIEW 데이터 포함</b><p>${r.review.map(c=>esc(c.g.name)).join(", ")}의 폭발한계는 자료원 또는 시험조건 차이가 있습니다. 공장 SDS·Design Basis로 최종 확정하세요.</p></div></div>`;
+ if(r.oxidPct>0)html+=`<div class="verdict v-warn"><div class="vi">O₂</div><div><b>산화제 ${fmt(r.oxidPct,2)}% 포함</b><p>산소·염소가 포함된 원료가스는 단순 공기 희석 모델과 실제 가연영역이 다를 수 있습니다. 전체 Stream LEL 환산값의 신뢰도를 낮게 평가하세요.</p></div></div>`;
+ if(r.unknownBalance.length)html+=`<div class="verdict v-warn"><div class="vi">?</div><div><b>미확인 Balance 포함</b><p>공기/미확인 Balance를 불활성 성분처럼 처리했습니다. 실제 성분 중 가연성 물질이 있으면 LEL이 달라집니다.</p></div></div>`;
+ html+=`<div class="metrics">
+  <div class="metric"><div class="mk">가연성분 기준 LEL</div><div class="mv">${fmt(r.fuelLEL,3)}%</div><div class="ma">가연성분을 100%로 정규화</div></div>
+  <div class="metric"><div class="mk">가연성분 기준 UEL</div><div class="mv">${fmt(r.fuelUEL,3)}%</div><div class="ma">Le Chatelier UEL 추정</div></div>
+  <div class="metric ${r.oxidPct>0?'warn':''}"><div class="mk">전체 Off-gas 기준 LEL</div><div class="mv">${fmt(r.streamLEL,3)}%</div><div class="ma">단순 희석 환산 · 주변 공기 중 전체 Stream 농도</div></div>
+  <div class="metric ${r.streamUELAvailable?'':'warn'}"><div class="mk">전체 Off-gas 기준 UEL</div><div class="mv">${r.streamUELAvailable?fmt(r.streamUEL,3)+'%':'HOLD'}</div><div class="ma">${r.streamUELAvailable?'비가연 성분이 없어 Fuel UEL과 동일':'불활성·산화제 포함 시 삼각 가연도 필요'}</div></div>
+  <div class="metric wide"><div class="mk">데이터 품질</div><div class="mv">${quality}</div><div class="ma">APPROVED ${r.positive.filter(c=>c.g.status==='APPROVED').length} · REVIEW ${r.review.length} · USER ${r.user.length}</div></div>
+ </div>`;
+ if(a){
+  const scale=Math.max(r.streamLEL*2,a.x*1.15,.1),lelP=Math.min(100,r.streamLEL/scale*100),curP=Math.min(100,a.x/scale*100);
+  html+=`<div class="gauge"><div class="gtitle"><span>현재농도 / 전체 Off-gas LEL</span><b>${fmt(a.pctLEL,1)} %LEL(계산)</b></div><div class="bar"><div class="z1" style="width:${lelP*.5}%"></div><div class="z2" style="left:${lelP*.5}%;width:${lelP*.5}%"></div><div class="z3" style="left:${lelP}%;right:0"></div><div class="mkline" style="left:${lelP}%"></div><div class="mkline current" style="left:${curP}%"></div></div><div class="barlabel"><span>0</span><span>LEL ${fmt(r.streamLEL,3)}%</span><span>${fmt(scale,2)}%</span></div></div>`;
+ }
+ html+=`<button class="toggle" id="detailToggle">계산 상세·출처 보기 ▾</button><div class="details" id="details">
+  <div class="dl"><span class="dk">조성 합계</span><span class="dv mono">${fmt(r.total,3)}%</span></div>
+  <div class="dl"><span class="dk">가연성분 합계 F</span><span class="dv mono">${fmt(r.flamPct,3)}%</span></div>
+  <div class="dl"><span class="dk">혼합식</span><span class="dv mono">1/L = Σ(zᵢ/Lᵢ)</span></div>
+  <div class="dl"><span class="dk">Stream LEL 환산</span><span class="dv mono">LEL_fuel / F</span></div>
+  <table class="calc-table"><thead><tr><th>가연성분</th><th>zᵢ</th><th>LEL</th><th>zᵢ/LEL</th><th>UEL</th><th>상태</th></tr></thead><tbody>${r.contributions.map(c=>`<tr><td><a href="${esc(c.g.url||'#')}" target="_blank" rel="noopener" style="color:var(--txt2)">${esc(c.g.name)}</a></td><td>${fmt(c.z,4)}</td><td>${fmt(c.g.lel,3)}</td><td>${fmt(c.l,5)}</td><td>${fmt(c.g.uel,3)}</td><td>${esc(c.g.status)}</td></tr>`).join("")}</tbody></table>
+ </div>`;
+ const warnings=[
+  "본 결과는 정상 공기, 상온·대기압 부근의 1차 추정입니다.",
+  "불활성·산화제가 포함된 전체 Off-gas의 UEL은 단순 비례환산하지 않고 HOLD 처리했습니다.",
+  "CO₂·수증기·염소계 희석물은 N₂와 동일한 희석효과를 갖지 않으므로 전체 Stream LEL도 정밀설계값이 아닙니다.",
+  "퍼지 완료, LOC/MOC, Hot Work, 밀폐공간 진입, 검지기 교정·응답계수 판단에는 사용할 수 없습니다.",
+  "LEL 미만이어도 VCM·CO·HCl·Cl₂ 등 독성·발암·부식 위험은 존재합니다.",
+  "최종 안전판단은 공장 SDS, GC, NFPA 69/497, KOSHA 및 시험자료로 검증하세요."
+ ];
+ html+=`<div class="disclaimer">${warnings.map(w=>`• ${esc(w)}`).join("<br>")}</div>`;
+ res.innerHTML=html;$("detailToggle").onclick=()=>{$("details").classList.toggle("show");$("detailToggle").textContent=$("details").classList.contains("show")?"계산 상세·출처 닫기 ▴":"계산 상세·출처 보기 ▾";};
+ updateSummary(r,a?`${fmt(a.pctLEL,0)}%LEL`:quality);res.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function updateSummary(r,state){
+ if(!r){$("sFuelLel").textContent="—";$("sStreamLel").textContent="—";$("sState").textContent=state||"—";return;}
+ $("sFuelLel").textContent=fmt(r.fuelLEL,2)+"%";$("sFuelLel").classList.add("on");$("sStreamLel").textContent=fmt(r.streamLEL,2)+"%";$("sStreamLel").classList.add("on");$("sState").textContent=state;$("sState").classList.add("on");
+}
+
+function toggleCustomFields(){const fl=$("cType").value==="flammable";$("cLelFld").style.display=fl?"block":"none";$("cUelFld").style.display=fl?"block":"none";}
+function saveCustom(){
+ const name=$("cName").value.trim(),type=$("cType").value,status=$("cStatus").value,source=$("cSource").value.trim(),lel=parseFloat($("cLel").value),uel=parseFloat($("cUel").value);
+ if(!name||!source){alert("물질명과 출처를 입력하세요.");return;}
+ if(type==="flammable"&&(status!=="HOLD")&&(!Number.isFinite(lel)||!Number.isFinite(uel)||lel<=0||uel<=lel||uel>100)){alert("가연성 물질의 LEL/UEL 값을 확인하세요. 0 < LEL < UEL ≤ 100 이어야 합니다.");return;}
+ const key="USR_"+Date.now();
+ userDB[key]={name,en:name,cas:$("cCas").value.trim()||"사용자",formula:$("cFormula").value.trim()||"미입력",type,lel:type==="flammable"&&status!=="HOLD"?lel:null,uel:type==="flammable"&&status!=="HOLD"?uel:null,status:type==="nonflammable"?"NONFLAMMABLE":type==="oxidizer"?"OXIDIZER":status,process:[($("cTag").value.trim()||"USER").toUpperCase()],source,url:/^https?:\/\//i.test(source)?source:"",hazards:["사용자 등록"]};
+ localStorage.setItem("explolimitCustomDB",JSON.stringify(userDB));comps.push({key,pct:0});$("customModal").classList.remove("show");renderComps();
+ ["cName","cCas","cFormula","cLel","cUel","cTag","cSource"].forEach(id=>$(id).value="");
+}
+
+$("addBtn").onclick=openGas;$("gasClose").onclick=()=>$("gasScrim").classList.remove("show");$("gasScrim").onclick=e=>{if(e.target===$("gasScrim"))$("gasScrim").classList.remove("show")};$("gasSearch").oninput=e=>renderGasList(e.target.value);
+$("customBtn").onclick=()=>{$("customModal").classList.add("show");toggleCustomFields();};$("customCancel").onclick=()=>$("customModal").classList.remove("show");$("customModal").onclick=e=>{if(e.target===$("customModal"))$("customModal").classList.remove("show")};$("cType").onchange=toggleCustomFields;$("customSave").onclick=saveCustom;
+$("normBtn").onclick=normalize;$("calcBtn").onclick=calculate;
+document.querySelectorAll("[data-preset]").forEach(b=>b.onclick=()=>{comps=(PRESETS[b.dataset.preset]||[]).map(x=>({...x}));$("result").style.display="none";updateSummary(null,"—");renderComps();});
+
+comps=PRESETS.recovery.map(x=>({...x}));renderComps();
+</script>
+</body>
+</html>
